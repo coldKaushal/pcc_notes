@@ -1,0 +1,128 @@
+ir is lang and mc independent
+good ir :
+	captures high lvl lang constructs & low lvl features
+	easy to translate from abstract syntax tree
+	support high lvl and mc dependent optimisation
+	easy to optimise and retarget
+
+diff to make single good ir therefore multiple ir
+
+high lvl ir:
+	lang independent but closer to hll
+	preserves hll constructs
+	hll optimisation
+
+medium lvl ir:
+	mc and lang independent, can represent set of source lang
+	good for code gen for 1 or more architecture
+	allows src lang vars and symbolic reg
+	reveals computation in greater detail than hir
+
+low lvl ir:
+	mc independent but closer to mc
+	easy to gen code from this
+	gen this is tedious
+	has low lvl constructs
+	features of mir
+
+issues in choosing ir:
+	analysis and translation should be fast and correct
+	easy to write for compiler writers
+	easy to understand and extend
+	allows optimisations and translation easily
+
+front end: src -> ir
+backend: ir -> target code
+
+benefits from this:
+	retargeting is possible
+	mc independent code optimisation is possible
+
+rte
+
+environment:
+	refers to a fn that maps a name to a storage location(L value)
+
+state:
+	refers to a function that maps a storage location to the value held there(R value)
+
+binding is counterpart of declaration
+
+storage allocation:
+	static -? fixed during entire exe of program
+	stack -> space pushed/popped during exe
+	heap: space allocated/free at any time
+
+activation record(AR):
+	Activation record is used to manage the information needed by a single execution of a procedure.
+	An activation record is pushed into the stack when a procedure is called and it is popped when the control returns to the caller function.
+	consist of: temp value, local data, savd mc status, access link, control link, params, return value
+	size of all field are predetermined at compile time except dynamic data obj
+
+
+static allocation:
+	binding bw name and storage fixed, addressing is efficient.
+	value of local name are retained across activation of procedure
+	disadv: no recursive procedure, no dynamic data struct
+
+static allocation:
+	for recursive procedure
+	Ar pushed/popped as it begin and end
+	the offset of each local data relative to beg of Ar is stored in symbol table
+
+dynamic arr can't be allocated withing AR, they can be allocated on the top of stack as soon as their associated declaration is evalued
+
+dope vector: fixed size descriptor containing the array's type declaration, it contains size, bound info of the array
+
+
+symbol table:
+	store info abt name, type, scope, allocation size
+	efficient in insertion and lookup
+	dynamic ds used:
+		linear lists
+		hash table
+
+storing names:
+	indirect scheme
+	pointer to array of character. pointing to the first char of lexeme
+
+block in programming lang is any set of lang constructs that can contain declaration
+
+lang is block structured if:
+	block can be nested
+	scope of declaration is limited withing the block
+
+most closely nested rule:
+	given several different declaration for the same identifier, the declaration that applies is the one in the mmost closely nested block
+
+symbol table compying with nested scope:
+	insert must not overwrite previous 
+	lookup -> refer to the most closed block rule
+	delete -> only recent declaration
+
+symbol table behaves in a stack like manner
+
+to implement symbol table under nested scope -> maintain separate symbol table for each scope, tables must be linked from inner to outer scope and from outer to nner scope
+
+lexical vs syntactic construction:
+	lex -> info enetered into symbol table by lex analayser, if lang doesnt allow diff declaration for same id(scope)
+
+	syn -> if scope allowed, lex -> return name of id, id is inserted when syntactic role is played by id
+
+relative address:
+	offset and base(usually 0)
+	loader responsible
+
+when nested procedure:
+	enclosing procedure is suspended
+	track of nesting a stack is maintained
+	new symbol table is made, with new id we need to specify which symbo table to use
+	
+
+semantic for this:
+	mktable(previous): new symbol table and return its pointer, prev-> enclosing procedure
+	enter(table, name, type, offset): enter data in table
+	addwidth(table, width): records the cumulative width of all entried in table in header of symbol table
+	enterproc(table, name, newtable): new table is pointed by the name of the procedure in the old table
+	stack tblptr: ptr to old symbol table
+	stack offset: relative address wrt a given nesting level
