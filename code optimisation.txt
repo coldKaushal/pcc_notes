@@ -1,0 +1,113 @@
+optimisation: code run faster and take less space
+
+goal of optimisation:
+	meaning preserved
+	speedup must occur by a measurable amount
+	work done be worth the effort
+
+dramatic improvement is obtained by changing source code(user)
+
+machine independent optimisation: comb of control flow and data flow analysis followed by the application of transformation
+
+flow control: graph form -> node = basic block, edge -> flow of control
+
+partition of basic block
+	1st statement = leader
+	statement that is target of goto  = leader
+	statement that follows goto statement = leader
+	basic block of leader= from line no. starting from the leader to line just above the next leader
+
+transformation-> local:
+	common subexp elimination:
+		a = b+c
+		d = b+c
+
+		b+c -> common subexp
+		for this use DAG for a basic block 
+		dag: leave -> unique id, var name, const
+			 interior nodes -> operator, list of var which will have the value computed
+	copy propogation:
+		given x = y, use y instead of x whenever possible. helps in dead code elimination
+	dead code elimination:
+		piece of code is dead if data computed is never used elsehwere and can be eliminated
+	constant folding:
+		substitutes and expression with a const
+		use to discover dead code
+		done at compile time
+	const combining:
+		r1 = 2*r0
+		r2 = 2*r1
+
+		replace r2 = 4*r0
+		remove r1
+		helps in finding dead code
+	strength reduction:
+		replace expensive opn with cheaper
+		r1 = r2*2
+		replace: r1 = r2 + r2 or r1 = r2<<1
+	constant propogation:
+		replaces registers with literals
+	backward copy propogation:
+		opposite of copy propogation
+		r6 = r2+1
+		r7 = r6
+
+		set r7 = r2+1, remove r7=r6
+
+global:
+	dead code elimination
+	const propogation
+	fwd copy propogation
+	common subexp elimination
+	code motion
+		move loop invariant computation to header
+	loop strenth reduction
+		suppose i = i+1 in loop and t2 = 4*i in loop, then precompute t2 for first iteration then, do, t2 = t2+4
+	induction variable elimination:
+		induction variable -> variable that gets increased or decreased by fixed amount
+
+		eliminate induction variable by using other variables
+
+transformation on basic blocks:
+	2 classes of local optimisationused:
+		structure preserving transformation
+			common subexp elimination
+			dead code elimination
+			renaming temp vars
+			interchange of statements
+				t1 = b+c
+				t2 = x+y
+
+				interchange t1 and t2 iff neither x nor y is t1 and neither b nor c is t2
+		algebraic transformation
+			replace expensive with cheaper expression
+
+loop optimisation:
+	code motion
+	loop strength reduction
+	induction variable elimination
+
+
+
+peephole optimisation:
+	simple but effective tech for locally improving target code
+	examines shot sequence of target instruction
+
+	constant folding
+	unreachable code
+	flow of control optimisation
+	 goto l1
+	 l1: goto l2
+
+	 replace with goto l2 
+	 algebraic simplication
+	 	x= x+0
+	 	x = x*1
+	 dead code
+	 reduction in strength
+
+
+
+
+
+

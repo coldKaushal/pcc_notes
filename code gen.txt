@@ -1,0 +1,86 @@
+good code generator:
+	meaning must remain same
+	must generate code effiiently
+	output code must be of high quality
+
+input to code generator
+	IR produced by front end
+	symbol table
+	input must be validated and free from errors
+
+output of code generator can be
+	absolute mc lang
+	relocatable mc lang
+	assembly lang
+
+assembly lang:
+	adv: simplified as uses symbolic name and mneonics
+
+relocatable mc lang
+	object modules
+	adv: flexibilty of separate compilation
+	disadv: overhead of extra linking and loading steps, extra complexity of object code frmats
+
+Absolute mc lang
+	handcoded address
+	Adv: Simpler and more efficient than generating object modules (also useful for dynamic code generation)
+	Disadvantage: inflexible --hard to reload generated code.
+
+when use assembly lang, target mc is the virtual mc at assembly lang lvl
+
+addressing modes: register, stack, direct, indirect, indexed
+registers: stack, frame, temp, mul/divide reg, floating point reg
+
+instructions:
+	load, store, arithermatic, logic, compare, unconditiona + conditional jump, return, 
+
+io instruction -> supported by runtime lib
+
+inst with reg opn are faster
+
+use of reg:
+	reg allocation: select set of vars that will reside in reg at a point in progm
+	reg assignment: pick specific reg for a var
+
+order in which computation is performed can affect the efficiency
+
+need to know the info abt target machine to build good code gen
+normally, byte addressable mc with 4 byte=1 word and n general purpose reg, 2 address instruction of form:
+	op src, dest
+	(dest = dest op src)
+
+The source and destination fields are not long enough to hold memory addresses, so certain bit patterns in these fields specify that words following an instruction contain operands and/or addresses.
+
+register descriptor:
+	keep track of what is currently in each reg
+	initially all reg are empty
+
+address descripto:
+	keep track of location where current value of the name can be found at runtime
+	location might be reg, stack
+
+getreg: returns location L to hold the value for x in x = y op z
+how?
+	1.) if y is in reg and has no other val and y is not live after this then free this reg and give for x
+	2.) 1 fails then return empty reg
+	3.) 2 fails then if x has next use/op require reg then free a reg by storing content into M(memory locn) and give this reg for x
+	4.) failing 3 select mem location x as L
+
+example: code gen-2 ppt, slide 9
+
+
+
+2 type of conf jumps:
+	if val of designated reg meet any of the 6 condn: pos, neg, zero, non zero, non-neg, non-pos:
+		eg: if x<y goto z
+			i.e R = y-x, if R is neg then jump
+
+	use set of condn code to indicate whether last quantity computed or loaded into reg is neg, pos, or zero
+
+compare instruction: 
+	CMP X, Y
+	CJL Z
+
+peephole optimisation:
+Optimizations can be directly applied to assembly code. Typically for optimizations that got missed at IR stage (perhaps due to local minima problem).
+At the assembly-level, we have greater visibility into instruction costs and instruction opcodes. E.g., hardware opcodes may be higher-level than IR opcodes.
