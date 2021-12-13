@@ -77,11 +77,19 @@ dope vector: fixed size descriptor containing the array's type declaration, it c
 
 symbol table:
 	store info abt name, type, scope, allocation size
-	efficient in insertion and lookup
+	should be efficient in insertion and lookup
 	dynamic ds used:
 		linear lists
 		hash table
+		bst
+prupose of st:
+	store name of all entities
+	verify if var has been declared
+	implement type checking
+	determine scope of a name(scope resolution)
 
+st:
+	<symbol name, type, attribute>
 storing names:
 	indirect scheme
 	pointer to array of character. pointing to the first char of lexeme
