@@ -49,7 +49,7 @@ state:
 binding is counterpart of declaration
 
 storage allocation:
-	static -? fixed during entire exe of program
+	static -> fixed during entire exe of program
 	stack -> space pushed/popped during exe
 	heap: space allocated/free at any time
 
